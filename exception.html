@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="pt_BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gerenciamento de Funcionários</title>
+
+</head>
+
+<body>
+
+  <h1>Gerenciamento de Funcionários</h1>
+
+
+
+  <form id="funcionarioForm">
+
+    <label for="nome">Nome:</label>
+
+    <input type="text" id="nome" name="nome" required><br>
+
+
+
+    <label for="idade">Idade:</label>
+
+    <input type="number" id="idade" name="idade" required><br>
+
+
+
+    <label for="cargo">Cargo:</label>
+
+    <input type="text" id="cargo" name="cargo" required><br>
+
+
+
+    <label for="departamento">Departamento (apenas para gerentes):</label>
+
+    <input type="text" id="departamento" name="departamento"><br>
+
+
+
+    <label for="linguagem">Linguagem de Programação (apenas para desenvolvedores):</label>
+
+    <input type="text" id="linguagem" name="linguagem"><br>
+
+
+
+    <button type="button" id="criarFuncionario">Criar Funcionário</button>
+
+  </form>
+
+
+
+  <div id="resultado"></div>
+
+
+
+  <script>
+
+    class Funcionario {
+
+      constructor(nome, idade, cargo) {
+
+        this.nome = nome;
+
+        this.idade = idade;
+
+        this.cargo = cargo;
+
+      }
+
+
+
+      seApresentar() {
+
+        return `Olá, meu nome é ${this.nome}, tenho ${this.idade} anos e sou um(a) ${this.cargo}.`;
+
+      }
+
+
+
+      trabalhar() {
+
+        return `${this.nome} está trabalhando.`;
+
+      }
+
+    }
+
+
+
+    class Gerente extends Funcionario {
+
+      constructor(nome, idade, cargo, departamento) {
+
+        super(nome, idade, cargo);
+
+        this.departamento = departamento;
+
+      }
+
+
+
+      gerenciar() {
+
+        return `${this.nome} está gerenciando o departamento ${this.departamento}.`;
+
+      }
+
+    }
+
+
+
+    class Desenvolvedor extends Funcionario {
+
+      constructor(nome, idade, cargo, linguagem) {
+
+        super(nome, idade, cargo);
+
+        this.linguagem = linguagem;
+
+      }
+
+
+
+      programar() {
+
+        return `${this.nome} está programando em ${this.linguagem}.`;
+
+      }
+
+    }
+
+
+
+    function criarFuncionario() {
+
+      const nome = document.getElementById('nome').value;
+
+      const idade = parseInt(document.getElementById('idade').value);
+
+      const cargo = document.getElementById('cargo').value;
+
+      const departamento = document.getElementById('departamento').value;
+
+      const linguagem = document.getElementById('linguagem').value;
+
+
+
+      try {
+
+        if (!nome || !idade || !cargo) {
+
+          throw new Error("Preencha todos os campos obrigatórios.");
+
+        }
+
+
+
+        let funcionario;
+
+
+
+        if (cargo === 'Gerente') {
+
+          if (!departamento) {
+
+            throw new Error("Informe o departamento para o gerente.");
+
+          }
+
+          funcionario = new Gerente(nome, idade, cargo, departamento);
+
+        } else if (cargo === 'Desenvolvedor') {
+
+          if (!linguagem) {
+
+            throw new Error("Informe a linguagem para o desenvolvedor.");
+
+          }
+
+          funcionario = new Desenvolvedor(nome, idade, cargo, linguagem);
+
+        } else {
+
+          funcionario = new Funcionario(nome, idade, cargo);
+
+        }
+
+
+
+        const resultadoDiv = document.getElementById('resultado');
+
+        resultadoDiv.innerHTML = `
+
+          <p>${funcionario.seApresentar()}</p>
+
+          <p>${funcionario.trabalhar()}</p>
+
+          ${(funcionario instanceof Gerente) ? `<p>${funcionario.gerenciar()}</p>` : ''}
+
+          ${(funcionario instanceof Desenvolvedor) ? `<p>${funcionario.programar()}</p>` : ''}
+
+        `;
+
+
+
+      } catch (error) {
+
+        exibirErro(error.message);
+
+      }
+
+    }
+
+
+
+    function exibirErro(mensagem) {
+
+      const resultadoDiv = document.getElementById('resultado');
+
+      resultadoDiv.innerHTML = `<p style="color: red;">Erro: ${mensagem}</p>`;
+
+    }
+
+
+
+    const criarFuncionarioBtn = document.getElementById('criarFuncionario');
+
+    criarFuncionarioBtn.addEventListener('click', criarFuncionario);
+
+  </script>
+
+</body>
+
+</html>
+
